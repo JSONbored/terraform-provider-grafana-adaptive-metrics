@@ -1,5 +1,8 @@
 ## Unreleased
 
+- Preserve exact, prefix and suffix matching in exemptions.
+- Support segment_id/exemption_id imports without losing segment identity.
+
 ## v0.4.0
 
 - [BREAKING] Default omitted auto-apply configuration to disabled. Previously an omitted `auto_apply` block preserved the server-side value; it is now planned as `enabled = false`, so set it explicitly on any segment or recommendations config where auto-apply should stay on.
@@ -18,6 +21,7 @@
 ## v0.3.4
 
 - [ENHANCEMENT] Document how the `ruleset` and `rule` resources conflict when both manage the same metric.
+||||||| parent of 0bb71bf (fix: preserve exemption match types and segmented imports)
 
 ## v0.3.3
 
