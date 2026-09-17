@@ -1,3 +1,8 @@
+## SubnetOps native ownership backport
+
+- Preserve exact, prefix and suffix matching in exemptions.
+- Support segment_id/exemption_id imports without losing segment identity.
+
 ## v0.3.3
 
 - [FEATURE] Add policy resource.
