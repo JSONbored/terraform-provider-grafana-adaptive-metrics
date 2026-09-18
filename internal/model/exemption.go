@@ -14,6 +14,7 @@ type Exemption struct {
 	DisableRecommendations bool      `json:"disable_recommendations,omitempty"`
 	CreatedAt              time.Time `json:"created_at,omitempty"`
 	UpdatedAt              time.Time `json:"updated_at,omitempty"`
+	ExpiresAt              *string   `json:"expires_at,omitempty"`
 	ManagedBy              string    `json:"managed_by,omitempty"`
 	Reason                 string    `json:"reason,omitempty"`
 }
@@ -31,6 +32,7 @@ func (e Exemption) ToTF() ExemptionTF {
 		DisableRecommendations: types.BoolValue(e.DisableRecommendations),
 		CreatedAt:              types.Int64Value(e.CreatedAt.UnixMilli()),
 		UpdatedAt:              types.Int64Value(e.UpdatedAt.UnixMilli()),
+		ExpiresAt:              types.StringPointerValue(e.ExpiresAt),
 		Reason:                 types.StringValue(e.Reason),
 	}
 }
@@ -45,11 +47,16 @@ type ExemptionTF struct {
 	Reason                 types.String   `tfsdk:"reason"`
 	CreatedAt              types.Int64    `tfsdk:"created_at"`
 	UpdatedAt              types.Int64    `tfsdk:"updated_at"`
+	ExpiresAt              types.String   `tfsdk:"expires_at"`
 
 	LastUpdated types.String `tfsdk:"-"`
 }
 
 func (e ExemptionTF) ToAPIReq() Exemption {
+	expiry := e.ExpiresAt.ValueStringPointer()
+	if e.ExpiresAt.IsUnknown() {
+		expiry = nil
+	}
 	return Exemption{
 		ID:                     e.ID.ValueString(),
 		Metric:                 e.Metric.ValueString(),
@@ -58,6 +65,7 @@ func (e ExemptionTF) ToAPIReq() Exemption {
 		DisableRecommendations: e.DisableRecommendations.ValueBool(),
 		CreatedAt:              time.UnixMilli(e.CreatedAt.ValueInt64()),
 		UpdatedAt:              time.UnixMilli(e.UpdatedAt.ValueInt64()),
+		ExpiresAt:              expiry,
 		ManagedBy:              managedByTF,
 		Reason:                 e.Reason.ValueString(),
 	}

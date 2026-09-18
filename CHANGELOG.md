@@ -2,6 +2,7 @@
 
 - Preserve exact, prefix and suffix matching in exemptions.
 - Support segment_id/exemption_id imports without losing segment identity.
+- Preserve exemption expiration timestamps through import, drift detection and updates.
 
 ## v0.4.0
 
@@ -22,6 +23,10 @@
 
 - [ENHANCEMENT] Document how the `ruleset` and `rule` resources conflict when both manage the same metric.
 ||||||| parent of 0bb71bf (fix: preserve exemption match types and segmented imports)
+||||||| parent of 6d2ff1b (Preserve live exemption expiration without lossy updates)
+- Preserve segment recommendation-configuration links.
+- Manage current recommendation-configuration settings through native import/read/update, without owning generated rules or parent membership.
+- Use the distinct jsonbored/grafana-adaptive-metrics provider address.
 
 ## v0.3.3
 
