@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -31,4 +32,14 @@ func TestLegacyExemptionDefaultsToExact(t *testing.T) {
 	require.NoError(t, json.Unmarshal([]byte(`{"id":"legacy","metric":"rpc_requests_total"}`), &input))
 	require.Equal(t, "exact", input.ToTF().MatchType.ValueString())
 	require.Equal(t, "exact", input.ToTF().ToAPIReq().MatchType)
+}
+
+func TestExemptionExpiryPreserved(t *testing.T) {
+	for _, expiry := range []string{"0001-01-01T00:00:00Z", "2026-12-01T12:34:56.123456Z"} {
+		value := Exemption{ExpiresAt: &expiry}
+		require.Equal(t, value.ExpiresAt, value.ToTF().ToAPIReq().ExpiresAt)
+	}
+	for _, v := range []types.String{types.StringNull(), types.StringUnknown()} {
+		require.Nil(t, (ExemptionTF{ExpiresAt: v}).ToAPIReq().ExpiresAt)
+	}
 }

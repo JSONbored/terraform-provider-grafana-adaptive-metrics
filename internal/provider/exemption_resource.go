@@ -105,6 +105,11 @@ func (e *exemptionResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Computed:    true,
 				Description: "Unix timestamp of when this exemption was created.",
 			},
+			"expires_at": schema.StringAttribute{
+				Optional: true, Computed: true,
+				Description:   "Server expiration timestamp, preserved verbatim. The zero timestamp represents no expiration.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
 			"updated_at": schema.Int64Attribute{
 				Computed:    true,
 				Description: "Unix timestamp of when this exemption was last updated.",

@@ -22,7 +22,8 @@ func TestExemptionImportKeepsSegmentAndMatchType(t *testing.T) {
 		t.Run("segment="+segment, func(t *testing.T) {
 			reads := 0
 			updates := 0
-			stored := model.Exemption{ID: "exemption-1", Metric: "rpc_", MatchType: "prefix", KeepLabels: []string{"method", "status"}}
+			expiry := "2026-12-01T12:34:56.123456Z"
+			stored := model.Exemption{ExpiresAt: &expiry, ID: "exemption-1", Metric: "rpc_", MatchType: "prefix", KeepLabels: []string{"method", "status"}}
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				require.Equal(t, "/v1/recommendations/exemptions/exemption-1", r.URL.Path)
 				require.Equal(t, segment, r.URL.Query().Get("segment"))
@@ -36,6 +37,7 @@ func TestExemptionImportKeepsSegmentAndMatchType(t *testing.T) {
 					require.NoError(t, json.NewDecoder(r.Body).Decode(&stored))
 					require.Equal(t, "exemption-1", stored.ID)
 					require.Equal(t, "prefix", stored.MatchType)
+					require.Equal(t, &expiry, stored.ExpiresAt)
 					require.Equal(t, []string{"method", "status"}, stored.KeepLabels)
 					require.Equal(t, "updated reason", stored.Reason)
 				default:
@@ -66,6 +68,7 @@ func TestExemptionImportKeepsSegmentAndMatchType(t *testing.T) {
 			require.Equal(t, "exemption-1", actual.ID.ValueString())
 			require.Equal(t, segment, actual.Segment.ValueString())
 			require.Equal(t, "prefix", actual.MatchType.ValueString())
+			require.Equal(t, expiry, actual.ExpiresAt.ValueString())
 			require.Equal(t, []types.String{types.StringValue("method"), types.StringValue("status")}, actual.KeepLabels)
 			require.Equal(t, 1, reads)
 			actual.Reason = types.StringValue("updated reason")
@@ -79,6 +82,7 @@ func TestExemptionImportKeepsSegmentAndMatchType(t *testing.T) {
 			require.False(t, update.Diagnostics.HasError(), update.Diagnostics)
 			require.False(t, update.State.Get(t.Context(), &actual).HasError())
 			require.Equal(t, "prefix", actual.MatchType.ValueString())
+			require.Equal(t, expiry, actual.ExpiresAt.ValueString())
 			require.Equal(t, segment, actual.Segment.ValueString())
 			require.Equal(t, "updated reason", actual.Reason.ValueString())
 			require.Equal(t, 1, updates)
