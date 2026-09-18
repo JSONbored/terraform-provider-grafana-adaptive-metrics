@@ -1,7 +1,10 @@
-## SubnetOps native ownership backport
+## SubnetOps 0.3.6-subnetops.1 native ownership backport
 
 - Preserve exact, prefix and suffix matching in exemptions.
 - Support segment_id/exemption_id imports without losing segment identity.
+- Preserve segment recommendation-configuration links.
+- Manage current recommendation-configuration settings through native import/read/update, without owning generated rules or parent membership.
+- Use the distinct jsonbored/grafana-adaptive-metrics provider address.
 
 ## v0.3.3
 

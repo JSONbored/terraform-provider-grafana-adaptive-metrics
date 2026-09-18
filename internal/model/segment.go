@@ -6,21 +6,23 @@ import (
 )
 
 type Segment struct {
-	ID                string           `json:"id"`
-	Name              string           `json:"name"`
-	Selector          string           `json:"selector"`
-	FallbackToDefault bool             `json:"fallback_to_default"`
-	AutoApply         *AutoApplyConfig `json:"auto_apply,omitempty"`
-	PolicyID          *string          `json:"policy_id,omitempty"`
+	ID                            string           `json:"id"`
+	Name                          string           `json:"name"`
+	Selector                      string           `json:"selector"`
+	FallbackToDefault             bool             `json:"fallback_to_default"`
+	AutoApply                     *AutoApplyConfig `json:"auto_apply,omitempty"`
+	RecommendationConfigurationID *string          `json:"recommendation_configuration_id,omitempty"`
+	PolicyID                      *string          `json:"policy_id,omitempty"`
 }
 
 func (e Segment) ToTF() SegmentTF {
 	segment := SegmentTF{
-		ID:                types.StringValue(e.ID),
-		Name:              types.StringValue(e.Name),
-		Selector:          types.StringValue(e.Selector),
-		FallbackToDefault: types.BoolValue(e.FallbackToDefault),
-		PolicyID:          types.StringPointerValue(e.PolicyID),
+		ID:                            types.StringValue(e.ID),
+		Name:                          types.StringValue(e.Name),
+		Selector:                      types.StringValue(e.Selector),
+		FallbackToDefault:             types.BoolValue(e.FallbackToDefault),
+		PolicyID:                      types.StringPointerValue(e.PolicyID),
+		RecommendationConfigurationID: types.StringPointerValue(e.RecommendationConfigurationID),
 	}
 
 	if e.AutoApply != nil {
@@ -33,12 +35,13 @@ func (e Segment) ToTF() SegmentTF {
 }
 
 type SegmentTF struct {
-	ID                types.String `tfsdk:"id"`
-	Name              types.String `tfsdk:"name"`
-	Selector          types.String `tfsdk:"selector"`
-	FallbackToDefault types.Bool   `tfsdk:"fallback_to_default"`
-	AutoApply         types.Object `tfsdk:"auto_apply"`
-	PolicyID          types.String `tfsdk:"policy_id"`
+	ID                            types.String `tfsdk:"id"`
+	Name                          types.String `tfsdk:"name"`
+	Selector                      types.String `tfsdk:"selector"`
+	FallbackToDefault             types.Bool   `tfsdk:"fallback_to_default"`
+	AutoApply                     types.Object `tfsdk:"auto_apply"`
+	RecommendationConfigurationID types.String `tfsdk:"recommendation_configuration_id"`
+	PolicyID                      types.String `tfsdk:"policy_id"`
 }
 
 func (e SegmentTF) ToAPIReq() Segment {
@@ -47,11 +50,16 @@ func (e SegmentTF) ToAPIReq() Segment {
 		policyID = e.PolicyID.ValueStringPointer()
 	}
 	segment := Segment{
-		ID:                e.ID.ValueString(),
-		Name:              e.Name.ValueString(),
-		Selector:          e.Selector.ValueString(),
-		FallbackToDefault: e.FallbackToDefault.ValueBool(),
-		PolicyID:          policyID,
+		ID:                            e.ID.ValueString(),
+		Name:                          e.Name.ValueString(),
+		Selector:                      e.Selector.ValueString(),
+		FallbackToDefault:             e.FallbackToDefault.ValueBool(),
+		PolicyID:                      policyID,
+		RecommendationConfigurationID: e.RecommendationConfigurationID.ValueStringPointer(),
+	}
+
+	if e.RecommendationConfigurationID.IsUnknown() {
+		segment.RecommendationConfigurationID = nil
 	}
 
 	if !e.AutoApply.IsNull() {

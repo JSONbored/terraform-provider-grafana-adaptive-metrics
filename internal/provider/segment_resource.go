@@ -60,6 +60,11 @@ func (e *segmentResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"recommendation_configuration_id": schema.StringAttribute{
+				Optional: true, Computed: true,
+				Description:   "Recommendation configuration linked to this segment; preserved through import and refresh.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "The name of the segment.",
