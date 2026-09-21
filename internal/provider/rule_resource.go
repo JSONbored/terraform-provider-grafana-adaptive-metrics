@@ -122,7 +122,8 @@ func (r *ruleResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	rule, err := r.rules.Read(state.Segment.ValueString(), state.Metric.ValueString())
 	if err != nil {
 		if client.IsErrNotFound(err) {
-			resp.Diagnostics.AddWarning("Aggregation rule not found", err.Error())
+			// A confirmed remote deletion is ordinary refresh drift. Removing the
+			// state lets Terraform propose recreation; API failures still error below.
 			resp.State.RemoveResource(ctx)
 			return
 		}
