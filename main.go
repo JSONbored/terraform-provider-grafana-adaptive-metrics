@@ -39,7 +39,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/grafana/grafana-adaptive-metrics",
+		Address: "registry.terraform.io/jsonbored/grafana-adaptive-metrics",
 		Debug:   debug,
 	}
 

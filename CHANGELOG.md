@@ -3,6 +3,9 @@
 - Preserve exact, prefix and suffix matching in exemptions.
 - Support segment_id/exemption_id imports without losing segment identity.
 - Preserve exemption expiration timestamps through import, drift detection and updates.
+- Treat a confirmed aggregation rule deletion as refresh drift.
+- Manage the service's recommendation configuration usage sources (`grafana-adaptive-metrics_recommendation_configuration`, global-default): read from the configurations list, replaced by ID with every other served field kept.
+- Use the distinct jsonbored/grafana-adaptive-metrics provider address.
 
 ## v0.4.0
 
